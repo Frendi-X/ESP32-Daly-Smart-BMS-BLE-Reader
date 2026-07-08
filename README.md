@@ -214,7 +214,7 @@ Project ini cocok untuk:
 
 * 📷 Instagram : https://www.instagram.com/frendi.co/
 * 💬 WhatsApp : https://wa.me/+6287888227410
-* 📧 Email : [frendirobotech@gmail.com](mailto:frendirobotech@gmail.com)
+* 📧 Email : [frendirobotech@gmail.com](mailto:frendirobotech@gmail.com) atau [frisnova.solutions@gmail.com](mailto:frisnova.solutions@gmail.com)
 * 📧 Email Alternatif : [frendix45@gmail.com](mailto:frendix45@gmail.com)
 
 ---
@@ -223,6 +223,6 @@ Project ini cocok untuk:
 
 **Dikembangkan oleh:** Imam Sa'id Nurfrendi
 
-**Komunitas:** Reog Robotic & Robotech Electronics
+**Komunitas:** FRISNOVA Innovative Solutions OR Robotech Electronics
 
 **Lisensi:** MIT License
