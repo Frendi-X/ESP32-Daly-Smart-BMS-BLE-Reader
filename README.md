@@ -1,111 +1,73 @@
-# ESP32 Daly Smart BMS BLE Reader
+# 🔋 ESP32 Daly Smart BMS BLE Reader
 
-Program berbasis **ESP32** untuk membaca data **Daly Smart BMS** melalui **Bluetooth Low Energy (BLE)** menggunakan library **NimBLE-Arduino**.
+Sistem monitoring **Daly Smart BMS** berbasis **ESP32** menggunakan komunikasi **Bluetooth Low Energy (BLE)** dengan library **NimBLE-Arduino**.
 
-ESP32 akan melakukan pemindaian perangkat BLE, menghubungkan diri ke Daly Smart BMS berdasarkan alamat MAC, mengirim permintaan data, menerima notifikasi BLE, kemudian mendekode protokol komunikasi Daly dan menampilkan seluruh informasi baterai melalui **Serial Monitor**.
+Project ini memungkinkan ESP32 terhubung langsung ke Daly Smart BMS melalui Bluetooth, membaca berbagai parameter baterai secara real-time, serta menampilkan hasil pembacaan melalui **Serial Monitor**. Cocok digunakan sebagai dasar pengembangan sistem monitoring baterai berbasis IoT, data logger, Home Assistant, maupun aplikasi monitoring energi.
 
 ---
 
-## ✨ Fitur
+## 📌 Fitur Utama
 
-* Scan otomatis perangkat Daly Smart BMS.
-* Koneksi BLE otomatis menggunakan alamat MAC.
-* Reconnect otomatis apabila koneksi terputus.
-* Verifikasi checksum setiap paket data.
-* Penyusunan otomatis paket tegangan sel (multi-frame).
-* Mendukung hingga **48 sel baterai**.
-* Mendeteksi otomatis nomor frame Daly (0-based maupun 1-based).
-* Polling data secara otomatis setiap 1 detik.
+* 📡 Scan otomatis perangkat Daly Smart BMS
+* 🔗 Koneksi BLE otomatis berdasarkan MAC Address
+* 🔄 Auto reconnect ketika koneksi terputus
+* ✅ Verifikasi checksum setiap paket data
+* 🔋 Monitoring tegangan total baterai
+* ⚡ Monitoring arus Charge/Discharge
+* 📊 Monitoring State of Charge (SOC)
+* 🔬 Monitoring tegangan setiap sel (hingga 48 sel)
+* 🌡 Monitoring temperatur BMS
+* ⚖ Monitoring status Cell Balancing
+* 🔌 Monitoring status Charge MOS & Discharge MOS
+* 🔄 Penyusunan otomatis paket multi-frame tegangan sel
+* 💻 Monitoring melalui Serial Monitor
 
 ---
 
 ## 📊 Data yang Dibaca
 
-### CMD 0x90 - Status Dasar
-
-* Total Voltage
-* Accumulated Voltage
-* Current
-* State of Charge (SOC)
-
-### CMD 0x91 - Tegangan Sel
-
-* Tegangan sel tertinggi
-* Nomor sel tertinggi
-* Tegangan sel terendah
-* Nomor sel terendah
-* Selisih tegangan antar sel
-
-### CMD 0x92 - Temperatur
-
-* Temperatur maksimum
-* Sensor temperatur maksimum
-* Temperatur minimum
-* Sensor temperatur minimum
-
-### CMD 0x93 - Status BMS
-
-* Status baterai
-* Charge MOS
-* Discharge MOS
-* Remaining Capacity
-
-### CMD 0x94 - Konfigurasi Baterai
-
-* Jumlah sel
-* Jumlah sensor temperatur
-* Status charger
-* Status load
-* Charge cycle
-
-### CMD 0x95 - Tegangan Setiap Sel
-
-Menampilkan tegangan seluruh sel dalam satuan:
-
-* mV
-* Volt
-
-Contoh:
-
-```text
-Cell 01 : 3385 mV (3.385 V)
-Cell 02 : 3387 mV (3.387 V)
-Cell 03 : 3386 mV (3.386 V)
-```
-
-### CMD 0x97 - Cell Balancing
-
-Menampilkan status balancing setiap sel.
-
-Contoh:
-
-```text
-Cell 01 : Open
-Cell 02 : Closed
-Cell 03 : Closed
-```
+| CMD  | Informasi                           |
+| ---- | ----------------------------------- |
+| 0x90 | Total Voltage, Current, SOC         |
+| 0x91 | Tegangan Sel Maksimum & Minimum     |
+| 0x92 | Temperatur Maksimum & Minimum       |
+| 0x93 | Status BMS, MOS, Remaining Capacity |
+| 0x94 | Konfigurasi Baterai                 |
+| 0x95 | Tegangan Sel Individual             |
+| 0x97 | Status Cell Balancing               |
 
 ---
 
-# 🔧 Hardware
+## 🔧 Hardware yang Dibutuhkan
 
-* ESP32
+* ESP32 Development Board
 * Daly Smart BMS BLE
-* Modul Bluetooth bawaan Daly
+* Baterai Lithium
+* Arduino IDE / PlatformIO
 
 ---
 
-# 📚 Library
+## 📚 Library
 
-Install library berikut melalui Arduino IDE:
+Library yang digunakan:
 
 * NimBLE-Arduino
 
 ---
 
-# ⚙️ Konfigurasi
+## 🔌 UUID BLE Daly Smart BMS
 
-Ubah alamat MAC Bluetooth sesuai BMS yang digunakan.
+| Service               | UUID                                   |
+| --------------------- | -------------------------------------- |
+| Service UUID          | `0000FFF0-0000-1000-8000-00805F9B34FB` |
+| Notify Characteristic | `0000FFF1-0000-1000-8000-00805F9B34FB` |
+| Write Characteristic  | `0000FFF2-0000-1000-8000-00805F9B34FB` |
+
+---
+
+## ⚙️ Konfigurasi
+
+Ubah alamat MAC Bluetooth sesuai dengan perangkat Daly Smart BMS yang digunakan.
 
 ```cpp
 #define BMS_MAC_ADDRESS "50:18:08:01:15:51"
@@ -113,46 +75,62 @@ Ubah alamat MAC Bluetooth sesuai BMS yang digunakan.
 
 ---
 
-# 📡 UUID BLE
+## ⌨️ Perintah Serial
 
-## Service
-
-```
-0000FFF0-0000-1000-8000-00805F9B34FB
-```
-
-## Notify Characteristic
-
-```
-0000FFF1-0000-1000-8000-00805F9B34FB
-```
-
-## Write Characteristic
-
-```
-0000FFF2-0000-1000-8000-00805F9B34FB
-```
+| Tombol | Fungsi                       |
+| ------ | ---------------------------- |
+| c      | Connect ke BMS               |
+| d      | Disconnect                   |
+| 0      | Basic Status                 |
+| 1      | Min/Max Cell Voltage         |
+| 2      | Temperature                  |
+| 3      | BMS State                    |
+| 4      | Battery Configuration        |
+| 5      | Cell Voltage                 |
+| 6      | Cell Balance                 |
+| r      | Reset pembacaan Cell Voltage |
 
 ---
 
-# ⌨️ Perintah Serial
+## 📂 Struktur Program
 
-| Tombol | Fungsi                          |
-| ------ | ------------------------------- |
-| c      | Connect ke BMS                  |
-| d      | Disconnect                      |
-| 0      | Status Dasar                    |
-| 1      | Tegangan Sel Maksimum & Minimum |
-| 2      | Temperatur                      |
-| 3      | Status BMS                      |
-| 4      | Konfigurasi Baterai             |
-| 5      | Tegangan Semua Sel              |
-| 6      | Status Cell Balancing           |
-| r      | Reset pembacaan tegangan sel    |
+### BLE Manager
+
+* Scan perangkat BLE
+* Koneksi ke Daly BMS
+* Auto reconnect
+* Subscribe notification
+
+### Packet Parser
+
+* Verifikasi checksum
+* Parsing seluruh frame Daly
+* Penyusunan paket multi-frame
+
+### Data Decoder
+
+* Decode seluruh command Daly
+* Konversi data ke satuan yang mudah dibaca
+* Menampilkan hasil ke Serial Monitor
 
 ---
 
-# 📷 Contoh Output
+## ⚙️ Cara Kerja
+
+1. ESP32 melakukan scan perangkat BLE.
+2. Daly Smart BMS ditemukan berdasarkan MAC Address.
+3. ESP32 melakukan koneksi ke BMS.
+4. Subscribe ke karakteristik notifikasi.
+5. Mengirim request data ke BMS.
+6. Menerima paket data BLE.
+7. Memverifikasi checksum.
+8. Mendekode setiap frame data.
+9. Menampilkan informasi baterai pada Serial Monitor.
+10. Mengulangi proses polling setiap 1 detik.
+
+---
+
+## 📷 Contoh Output
 
 ```text
 --- DALY FRAME CMD=0x90 ---
@@ -177,42 +155,74 @@ Cell 03 : 3386 mV (3.386 V)
 
 ---
 
-# 📂 Struktur Program
+## 🚀 Pengembangan Lanjutan
 
-```
-ESP32
-   │
-   ├── Scan BLE
-   │
-   ├── Connect ke Daly BMS
-   │
-   ├── Subscribe Notification
-   │
-   ├── Kirim Request CMD
-   │
-   ├── Terima Data BLE
-   │
-   ├── Verifikasi Checksum
-   │
-   ├── Decode Frame Daly
-   │
-   └── Tampilkan ke Serial Monitor
-```
+Beberapa fitur yang dapat ditambahkan:
+
+* 📡 MQTT
+* 🌐 Web Server Monitoring
+* ☁️ Blynk IoT
+* 🏠 Home Assistant
+* 📈 InfluxDB + Grafana
+* 📱 Telegram Bot
+* 📤 Firebase Realtime Database
+* 💾 SD Card Data Logger
+* 📺 OLED / TFT Display
+* 🌍 Modbus TCP / RTU
+* 🔔 Alarm Over Voltage & Under Voltage
 
 ---
 
-# 🚀 Fitur Utama
+## 📦 Use Case
 
-* Komunikasi BLE menggunakan NimBLE (lebih ringan dibanding BLE bawaan ESP32)
-* Parsing seluruh frame Daly Smart BMS
-* Pembacaan tegangan sel otomatis
-* Auto reconnect
-* Validasi checksum
-* Mendukung hingga 48 sel baterai
-* Mudah dikembangkan untuk MQTT, WiFi, OLED, LCD, atau Home Assistant
+Project ini cocok untuk:
+
+* 🔋 Monitoring baterai Lithium
+* ⚡ Solar Power System (PLTS)
+* 🚐 Campervan
+* 🚲 Sepeda listrik
+* 🛵 Motor listrik
+* 🚗 Kendaraan listrik
+* 🏡 Home Energy Storage
+* 🌐 IoT Battery Monitoring
+* 📊 Data Logger Baterai
 
 ---
 
-# 📄 Lisensi
+## 🛠 Instalasi
 
-Proyek ini bersifat **open source** dan bebas digunakan, dimodifikasi, maupun dikembangkan lebih lanjut sesuai kebutuhan.
+1. Install Arduino IDE atau PlatformIO.
+2. Install library **NimBLE-Arduino**.
+3. Ubah MAC Address sesuai BMS.
+4. Upload program ke ESP32.
+5. Buka Serial Monitor pada baudrate **115200**.
+6. ESP32 akan melakukan scan dan terhubung ke Daly Smart BMS secara otomatis.
+
+---
+
+## ⚠️ Catatan Penting
+
+* Hanya mendukung **Daly Smart BMS versi Bluetooth (BLE)**.
+* Pastikan alamat MAC Bluetooth sudah benar.
+* Mendukung hingga **48 sel baterai**.
+* Polling data dilakukan setiap **1 detik**.
+* Tegangan sel dikirim dalam beberapa frame dan akan digabungkan secara otomatis sebelum ditampilkan.
+
+---
+
+## 📧 Contact Us
+
+* 📷 Instagram : https://www.instagram.com/frendi.co/
+* 💬 WhatsApp : https://wa.me/+6287888227410
+* 📧 Email : [frendirobotech@gmail.com](mailto:frendirobotech@gmail.com)
+* 📧 Email Alternatif : [frendix45@gmail.com](mailto:frendix45@gmail.com)
+
+---
+
+## 👨‍💻 Author
+
+**Dikembangkan oleh:** Imam Sa'id Nurfrendi
+
+**Komunitas:** Reog Robotic & Robotech Electronics
+
+**Lisensi:** MIT License
